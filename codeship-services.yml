@@ -1,0 +1,26 @@
+nginx:
+  build:
+    image: amitsaha/nginx-geoip2
+    context: .
+    dockerfile: Dockerfile.image_under_test
+
+cst:
+  image: gcr.io/gcp-runtimes/container-structure-test
+  depends_on: ["nginx"]
+  volumes:
+    - ./cst/filesystem_tests.yaml:/test-config/filesystem_tests.yaml
+    - ./cst/metadata_tests.yaml:/test-config/metadata_tests.yaml
+    - /var/run/docker.sock:/var/run/docker.sock
+
+docker_client:
+  build:
+    image: amitsaha/docker-client
+    context: .
+    dockerfile: Dockerfile.docker_client
+  depends_on: ["curl"]
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+
+curl:
+  image: pstauffer/curl:latest
+  depends_on: ["nginx"]

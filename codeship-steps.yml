@@ -1,0 +1,15 @@
+- service: cst
+  name: Run container structure tests
+  command: test --image amitsaha/nginx-geoip2 --config /test-config/filesystem_tests.yaml --config /test-config/metadata_tests.yaml
+ 
+- service: nginx
+  name: Test nginx configuration
+  command: -t
+
+- service: curl 
+  name: HttpTest
+  command: 'curl -H "X-Forwarded-For: 8.8.8.8" http://nginx'
+
+- service: docker_client
+  name: Test GeoIP data in logs
+  command: /test_nginx_log.py
